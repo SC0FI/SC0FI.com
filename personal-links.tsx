@@ -1,9 +1,11 @@
 "use client"
 
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Twitter, Github, Mail, Youtube } from "lucide-react"
+import { Twitter, Github, Mail, Youtube, Copy, Check } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export const metadata = {
@@ -46,6 +48,33 @@ export default function Component() {
   ]
 
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 })
+  const [isRightHalfHovered, setIsRightHalfHovered] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+
+  const copyToClipboard = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    try {
+      await navigator.clipboard.writeText("sc0fi@sc0fi.com")
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    } catch (err) {
+      console.error("Failed to copy email:", err)
+    }
+  }
+
+  const handleContactMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const width = rect.width
+    const isRightHalf = x > width / 2
+    setIsRightHalfHovered(isRightHalf)
+  }
+
+  const handleContactMouseLeave = () => {
+    setIsRightHalfHovered(false)
+  }
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -107,28 +136,62 @@ export default function Component() {
           {links.map((link, index) => (
             <Card
               key={index}
-              className="bg-gray-900 border-gray-800 hover:border-purple-500 transition-all duration-300 hover:scale-105"
+              className="bg-gray-900 border-gray-800 hover:border-purple-500 transition-all duration-300 hover:scale-105 relative overflow-hidden"
             >
-              <Button
-                variant="ghost"
-                className="w-full h-auto p-4 justify-start text-left hover:bg-purple-900/20"
-                asChild
-              >
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.title === "Contact Me" ? (
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <link.icon className="w-6 h-6 text-purple-400" />
+              {link.title === "Contact Me" ? (
+                <div
+                  className="relative h-full"
+                  onMouseMove={handleContactMouseMove}
+                  onMouseLeave={handleContactMouseLeave}
+                >
+                  <Button
+                    variant="ghost"
+                    className="w-full h-auto p-4 justify-start text-left hover:bg-purple-900/20"
+                    asChild
+                  >
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-shrink-0">
+                            <link.icon className="w-6 h-6 text-purple-400" />
+                          </div>
+                          <div className="flex-grow min-w-0">
+                            <div className="font-semibold text-white">{link.title}</div>
+                            <div className="text-sm text-gray-400 truncate">{link.description}</div>
+                          </div>
                         </div>
-                        <div className="flex-grow min-w-0">
-                          <div className="font-semibold text-white">{link.title}</div>
-                          <div className="text-sm text-gray-400 truncate">{link.description}</div>
-                        </div>
+                        <div className="text-purple-400/60 text-sm">sc0fi@sc0fi.com</div>
                       </div>
-                      <div className="text-purple-400/60 text-sm ml-4">sc0fi@sc0fi.com</div>
-                    </div>
-                  ) : (
+                    </a>
+                  </Button>
+
+                  {/* Copy button overlay - right quarter */}
+                  <div
+                    onClick={copyToClipboard}
+                    className={`absolute top-0 bottom-0 right-0 w-1/4 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded-r-lg transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer ${
+                      isRightHalfHovered ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+                    }`}
+                  >
+                    {isCopied ? (
+                      <>
+                        <Check className="w-3 h-3" />
+                        <span className="hidden sm:inline">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span className="hidden sm:inline">Copy</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  variant="ghost"
+                  className="w-full h-auto p-4 justify-start text-left hover:bg-purple-900/20"
+                  asChild
+                >
+                  <a href={link.url} target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
                         <link.icon className="w-6 h-6 text-purple-400" />
@@ -138,9 +201,9 @@ export default function Component() {
                         <div className="text-sm text-gray-400 truncate">{link.description}</div>
                       </div>
                     </div>
-                  )}
-                </a>
-              </Button>
+                  </a>
+                </Button>
+              )}
             </Card>
           ))}
         </div>
