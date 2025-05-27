@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Twitter, Github, Mail, Youtube, Music } from "lucide-react"
+import { Twitter, Github, Mail, Youtube } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export const metadata = {
@@ -31,12 +31,12 @@ export default function Component() {
       icon: Youtube,
       description: "Watch my videos",
     },
-    {
-      title: "Spotify",
-      url: "https://open.spotify.com/user/rnfefzzy09o0i0ol7z4nzf7ak?si=eTLp6Wr2RV23UPQXajYvgQ",
-      icon: Music,
-      description: "See what I listen to",
-    },
+    //{ commented for now
+    //  title: "Spotify",
+    //  url: "https://open.spotify.com/user/rnfefzzy09o0i0ol7z4nzf7ak?si=eTLp6Wr2RV23UPQXajYvgQ",
+    //  icon: Music,
+    //  description: "See what I listen to",
+    //},
     {
       title: "Contact Me",
       url: "mailto:sc0fi@sc0fi.com",
@@ -45,7 +45,7 @@ export default function Component() {
     },
   ]
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 })
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
