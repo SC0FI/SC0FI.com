@@ -52,8 +52,16 @@ export default function Component() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
+    // Only add mouse tracking on non-touch devices
+    if (!("ontouchstart" in window)) {
+      window.addEventListener("mousemove", handleMouseMove)
+    }
+
+    return () => {
+      if (!("ontouchstart" in window)) {
+        window.removeEventListener("mousemove", handleMouseMove)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -62,13 +70,15 @@ export default function Component() {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Mouse glow effect */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          background: `radial-gradient(200px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.3), transparent 40%)`,
-        }}
-      />
+      {/* Mouse glow effect - only on non-touch devices */}
+      {typeof window !== "undefined" && !("ontouchstart" in window) && (
+        <div
+          className="fixed inset-0 pointer-events-none z-0"
+          style={{
+            background: `radial-gradient(200px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.3), transparent 40%)`,
+          }}
+        />
+      )}
 
       <div className="container max-w-md mx-auto px-4 py-8 relative z-10">
         {/* Profile Section */}
