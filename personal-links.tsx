@@ -80,6 +80,13 @@ export default function Component() {
         />
       )}
 
+      {/* Border glow effect */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-purple-500/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-purple-500/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/3 via-transparent to-purple-500/3"></div>
+      </div>
+
       <div className="container max-w-md mx-auto px-4 py-8 relative z-10">
         {/* Profile Section */}
         <div className="text-center mb-8">
@@ -108,15 +115,30 @@ export default function Component() {
                 asChild
               >
                 <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <link.icon className="w-6 h-6 text-purple-400" />
+                  {link.title === "Contact Me" ? (
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex-shrink-0">
+                          <link.icon className="w-6 h-6 text-purple-400" />
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <div className="font-semibold text-white">{link.title}</div>
+                          <div className="text-sm text-gray-400 truncate">{link.description}</div>
+                        </div>
+                      </div>
+                      <div className="text-purple-400/60 text-sm ml-4">sc0fi@sc0fi.com</div>
                     </div>
-                    <div className="flex-grow min-w-0">
-                      <div className="font-semibold text-white">{link.title}</div>
-                      <div className="text-sm text-gray-400 truncate">{link.description}</div>
+                  ) : (
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <link.icon className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <div className="font-semibold text-white">{link.title}</div>
+                        <div className="text-sm text-gray-400 truncate">{link.description}</div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </a>
               </Button>
             </Card>
