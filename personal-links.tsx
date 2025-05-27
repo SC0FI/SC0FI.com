@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Twitter, Github, Mail, Youtube, Music } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export const metadata = {
   title: "SC0FI",
@@ -23,7 +23,7 @@ export default function Component() {
       title: "Twitter",
       url: "https://x.com/SC0FI_",
       icon: Twitter,
-      description: "Follow my thoughts",
+      description: "See me repost cat pictures",
     },
     {
       title: "YouTube Channel",
@@ -45,13 +45,32 @@ export default function Component() {
     },
   ]
 
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
+  }, [])
+
   useEffect(() => {
     document.title = "SC0FI"
   }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="container max-w-md mx-auto px-4 py-8">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Mouse glow effect */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          background: `radial-gradient(200px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.3), transparent 40%)`,
+        }}
+      />
+
+      <div className="container max-w-md mx-auto px-4 py-8 relative z-10">
         {/* Profile Section */}
         <div className="text-center mb-8">
           <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-purple-500">
@@ -61,11 +80,9 @@ export default function Component() {
 
           <h1 className="text-2xl font-bold mb-1">SC0FI</h1>
           <p className="text-lg text-gray-400 mb-4">Jacob Maddox</p>
-          <p className="text-gray-300 mb-4">Creative Developer & Content Creator</p>
+          <p className="text-gray-300 mb-4">Developer and Student</p>
 
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Java programmer and I love playing video games in my free time!
-          </p>
+          <p className="text-sm text-gray-400 leading-relaxed">I program in Java and play too many video games.</p>
         </div>
 
         {/* Links Section */}
